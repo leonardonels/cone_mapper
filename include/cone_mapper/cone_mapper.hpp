@@ -10,6 +10,12 @@
 namespace cone_mapper
 {
 
+struct TrackedCone
+{
+  geometry_msgs::msg::Point position;
+  int observation_count;
+};
+
 class ConeMapper : public rclcpp::Node
 {
 public:
@@ -23,12 +29,20 @@ private:
     const std::string & to_frame,
     const rclcpp::Time & stamp);
 
+  void updateTrackedCones(const std::vector<geometry_msgs::msg::Point> & detected_cones);
+  double distance(const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2);
+  geometry_msgs::msg::Point average(const geometry_msgs::msg::Point & p1, const geometry_msgs::msg::Point & p2);
+
   std::string target_frame_;
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
   rclcpp::Subscription<visualization_msgs::msg::Marker>::SharedPtr marker_sub_;
   rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr marker_pub_;
+
+  std::vector<TrackedCone> tracked_cones_;
+  const double association_distance_ = 0.3;
+  const int min_observations_ = 5;  // minimum for reliable cone
 };
 
 }  // namespace cone_mapper
