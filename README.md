@@ -26,4 +26,3 @@ Notes
   `config/params.yaml`.
 - The mapper expects reasonably accurate depth inputs — large depth noise will
   increase mapping uncertainty.
-# cone_mapper
